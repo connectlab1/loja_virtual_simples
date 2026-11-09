@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore | Sua Loja Virtual</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            dark: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom Scrollbar for Drawer */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
+                    <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-slate-900">Tech<span class="text-sky-600">Store</span></span>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-md hidden md:block">
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="Buscar produtos por nome..." 
+                           class="w-full bg-slate-100 border border-slate-200 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-500/20 transition-all">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="flex items-center space-x-3">
+                <button id="open-cart-btn" class="relative p-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-sky-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center scale-0 transition-transform">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div class="px-4 pb-3 md:hidden">
+            <div class="relative">
+                <input type="text" id="search-input-mobile" placeholder="Buscar produtos..." 
+                       class="w-full bg-slate-100 border border-slate-200 rounded-full py-2 pl-9 pr-4 text-sm focus:outline-none focus:border-sky-500">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Banner Principal -->
+    <section class="bg-gradient-to-r from-slate-900 via-slate-800 to-sky-950 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-3 text-center md:text-left">
+                <span class="inline-block px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 text-xs font-semibold tracking-wider uppercase border border-sky-500/30">
+                    Ofertas Especiais
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Equipe seu Setup com os Melhores Gadgets</h1>
+                <p class="text-slate-300 text-sm sm:text-base max-w-xl">Entregas rápidas, produtos originais e atendimento via WhatsApp. Aproveite nossas promoções!</p>
+            </div>
+            <a href="#catalogo" class="px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 font-semibold text-white shadow-lg shadow-sky-600/30 transition-all hover:scale-105 shrink-0 text-sm">
+                Ver Catálogo
+            </a>
+        </div>
+    </section>
+
+    <!-- Main Content / Catalog -->
+    <main id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+        
+        <!-- Category Filters -->
+        <div class="flex items-center space-x-2 overflow-x-auto pb-4 mb-8 no-scrollbar" id="category-filters">
+            <!-- Buttons dynamically generated or static -->
+            <button data-category="all" class="category-btn px-5 py-2 rounded-full text-sm font-semibold bg-sky-600 text-white shadow-sm transition-all shrink-0">
+                Todos
+            </button>
+            <button data-category="audio" class="category-btn px-5 py-2 rounded-full text-sm font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all shrink-0">
+                Áudio
+            </button>
+            <button data-category="perifericos" class="category-btn px-5 py-2 rounded-full text-sm font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all shrink-0">
+                Periféricos
+            </button>
+            <button data-category="smartwear" class="category-btn px-5 py-2 rounded-full text-sm font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all shrink-0">
+                Wearables
+            </button>
+            <button data-category="acessorios" class="category-btn px-5 py-2 rounded-full text-sm font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all shrink-0">
+                Acessórios
+            </button>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Product cards will be populated via JS -->
+        </div>
+
+        <!-- Empty State (No Products Found) -->
+        <div id="empty-state" class="hidden text-center py-16 space-y-3">
+            <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+                <i data-lucide="package-x" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-700">Nenhum produto encontrado</h3>
+            <p class="text-sm text-slate-500">Tente buscar por outro termo ou mude a categoria.</p>
+        </div>
+    </main>
+
+    <!-- Slide-over Shopping Cart (Drawer) -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none">
+        <!-- Backdrop Overlay -->
+        <div id="cart-overlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div id="cart-panel" class="w-screen max-w-md bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 pointer-events-auto">
+                
+                <!-- Drawer Header -->
+                <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 text-sky-600"></i>
+                        <h2 class="text-lg font-bold text-slate-900">Meu Carrinho</h2>
+                    </div>
+                    <button id="close-cart-btn" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Drawer Cart Items Body -->
+                <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+                    <!-- Items inserted via JS -->
+                </div>
+
+                <!-- Empty Cart Message -->
+                <div id="empty-cart-msg" class="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-3">
+                    <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                        <i data-lucide="shopping-cart" class="w-8 h-8"></i>
+                    </div>
+                    <p class="text-slate-600 font-medium">Seu carrinho está vazio</p>
+                    <button id="continue-shopping" class="text-sm font-semibold text-sky-600 hover:text-sky-700">Explorar produtos</button>
+                </div>
+
+                <!-- Drawer Footer & Checkout -->
+                <div id="cart-footer" class="p-6 border-t border-slate-100 bg-slate-50 space-y-4 hidden">
+                    <div class="space-y-1.5 text-sm">
+                        <div class="flex justify-between text-slate-500">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-slate-500">
+                            <span>Frete</span>
+                            <span class="text-emerald-600 font-semibold">Grátis</span>
+                        </div>
+                        <div class="flex justify-between text-base font-bold text-slate-900 border-t border-slate-200 pt-2 mt-2">
+                            <span>Total</span>
+                            <span id="cart-total" class="text-sky-600">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <!-- Client Details Form for WhatsApp Checkout -->
+                    <div class="space-y-2 pt-2">
+                        <input type="text" id="client-name" placeholder="Seu Nome Completo" class="w-full text-xs p-2.5 rounded-lg border border-slate-200 focus:outline-none focus:border-sky-500">
+                        <input type="text" id="client-address" placeholder="Endereço de Entrega" class="w-full text-xs p-2.5 rounded-lg border border-slate-200 focus:outline-none focus:border-sky-500">
+                    </div>
+
+                    <button id="checkout-whatsapp-btn" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2 transition-all hover:scale-[1.02]">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        <span>Finalizar Pedido no WhatsApp</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Quick View Modal -->
+    <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="modal-content" class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 hover:bg-white text-slate-600 shadow transition-all">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <div class="bg-slate-100 p-6 flex items-center justify-center">
+                    <img id="modal-img" src="" alt="" class="max-h-64 object-contain">
+                </div>
+                <div class="p-6 flex flex-col justify-between space-y-4">
+                    <div>
+                        <span id="modal-category" class="text-xs font-bold text-sky-600 uppercase tracking-wider"></span>
+                        <h3 id="modal-title" class="text-xl font-bold text-slate-900 mt-1"></h3>
+                        <p id="modal-price" class="text-2xl font-extrabold text-slate-900 mt-2"></p>
+                        <p id="modal-desc" class="text-xs text-slate-500 mt-3 leading-relaxed"></p>
+                    </div>
+                    <button id="modal-add-btn" class="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm flex items-center justify-center space-x-2 transition-all shadow-md shadow-sky-600/20">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        <span>Adicionar ao Carrinho</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs space-y-4">
+            <div class="flex items-center justify-center space-x-2">
+                <div class="w-6 h-6 rounded bg-sky-600 flex items-center justify-center text-white font-bold">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                </div>
+                <span class="font-bold text-white text-base">TechStore</span>
+            </div>
+            <p>&copy; 2026 TechStore Demo. Projeto de Loja Estática para GitHub Pages.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Store Phone Number for WhatsApp Checkout (Replace with your actual phone number)
+        const WHATSAPP_PHONE = "5511999999999";
+
+        // Mock Database of Products
+        const products = [
+            {
+                id: 1,
+                name: "Fone Bluetooth Noise Cancelling",
+                category: "audio",
+                price: 299.90,
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80",
+                description: "Headphone sem fio com cancelamento ativo de ruído, bateria com autonomia de até 30 horas e excelente qualidade de graves."
+            },
+            {
+                id: 2,
+                name: "Mouse Gamer RGB 16000 DPI",
+                category: "perifericos",
+                price: 149.90,
+                image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&q=80",
+                description: "Mouse óptico de alta precisão com botões programáveis, iluminação RGB customizável e design ergonômico."
+            },
+            {
+                id: 3,
+                name: "Smartwatch Sport Monitor",
+                category: "smartwear",
+                price: 399.00,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80",
+                description: "Relógio inteligente com monitoramento cardíaco, GPS integrado, tela AMOLED HD e resistência à água (50m)."
+            },
+            {
+                id: 4,
+                name: "Teclado Mecânico Compacto RGB",
+                category: "perifericos",
+                price: 349.90,
+                image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80",
+                description: "Teclado mecânico formato 60% com switches azuis de rápida resposta, keycaps em PBT e cabo USB-C removível."
+            },
+            {
+                id: 5,
+                name: "Caixa de Som Bluetooth Portátil",
+                category: "audio",
+                price: 189.90,
+                image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&q=80",
+                description: "Caixa de som compacta com som estéreo potente, proteção contra água IPX7 e bateria para até 12 horas de música."
+            },
+            {
+                id: 6,
+                name: "Suporte Articulado para Monitor",
+                category: "acessorios",
+                price: 159.00,
+                image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&q=80",
+                description: "Suporte a gás para monitores de 17 a 32 polegadas, permitindo ajuste de altura, inclinação e rotação 360°."
+            },
+            {
+                id: 7,
+                name: "Carregador Magsafe Sem Fio",
+                category: "acessorios",
+                price: 99.90,
+                image: "https://images.unsplash.com/photo-1622445268465-84385d581293?w=500&q=80",
+                description: "Carregador por indução magnética de 15W com acoplamento perfeito e proteção contra aquecimento."
+            },
+            {
+                id: 8,
+                name: "Webcam Full HD 1080p Autofocus",
+                category: "perifericos",
+                price: 219.90,
+                image: "https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=500&q=80",
+                description: "Webcam HD com microfone duplo integrado e ajuste automático de iluminação para reuniões e transmissões."
+            }
+        ];
+
+        // State Management
+        let cart = [];
+        let activeCategory = 'all';
+        let searchQuery = '';
+        let currentModalProductId = null;
+
+        // DOM Elements
+        const productsGrid = document.getElementById('products-grid');
+        const emptyState = document.getElementById('empty-state');
+        const searchInput = document.getElementById('search-input');
+        const searchInputMobile = document.getElementById('search-input-mobile');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        
+        // Cart Drawer Elements
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartPanel = document.getElementById('cart-panel');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const openCartBtn = document.getElementById('open-cart-btn');
+        const closeCartBtn = document.getElementById('close-cart-btn');
+        const cartBadge = document.getElementById('cart-badge');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const emptyCartMsg = document.getElementById('empty-cart-msg');
+        const cartFooter = document.getElementById('cart-footer');
+        const cartSubtotalEl = document.getElementById('cart-subtotal');
+        const cartTotalEl = document.getElementById('cart-total');
+        const continueShoppingBtn = document.getElementById('continue-shopping');
+        const checkoutWhatsappBtn = document.getElementById('checkout-whatsapp-btn');
+
+        // Modal Elements
+        const productModal = document.getElementById('product-modal');
+        const modalContent = document.getElementById('modal-content');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalImg = document.getElementById('modal-img');
+        const modalCategory = document.getElementById('modal-category');
+        const modalTitle = document.getElementById('modal-title');
+        const modalPrice = document.getElementById('modal-price');
+        const modalDesc = document.getElementById('modal-desc');
+        const modalAddBtn = document.getElementById('modal-add-btn');
+
+        // Functions
+        function formatPrice(val) {
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // Render Catalog Products
+        function renderProducts() {
+            const filtered = products.filter(p => {
+                const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                productsGrid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            productsGrid.innerHTML = filtered.map(p => `
+                <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+                    <div class="relative bg-slate-50 p-6 flex items-center justify-center overflow-hidden cursor-pointer" onclick="openModal(${p.id})">
+                        <img src="${p.image}" alt="${p.name}" class="h-44 object-contain group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-slate-600 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border border-slate-200">${p.category}</span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm leading-snug hover:text-sky-600 transition-colors cursor-pointer" onclick="openModal(${p.id})">${p.name}</h3>
+                            <p class="text-lg font-extrabold text-slate-900 mt-2">${formatPrice(p.price)}</p>
+                        </div>
+                        <button onclick="addToCart(${p.id})" class="mt-4 w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-sky-600 text-white font-semibold text-xs flex items-center justify-center space-x-2 transition-all">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>Adicionar</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Cart Operations
+        function addToCart(productId) {
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                const prod = products.find(p => p.id === productId);
+                cart.push({ ...prod, quantity: 1 });
+            }
+            updateCartUI();
+            openCart();
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (!item) return;
+
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(i => i.id !== productId);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+
+            // Update Badge
+            cartBadge.innerText = totalItems;
+            if (totalItems > 0) {
+                cartBadge.classList.remove('scale-0');
+            } else {
+                cartBadge.classList.add('scale-0');
+            }
+
+            // Update Items List
+            if (cart.length === 0) {
+                emptyCartMsg.classList.remove('hidden');
+                cartFooter.classList.add('hidden');
+                cartItemsContainer.innerHTML = '';
+            } else {
+                emptyCartMsg.classList.add('hidden');
+                cartFooter.classList.remove('hidden');
+
+                cartItemsContainer.innerHTML = cart.map(item => `
+                    <div class="flex items-center space-x-4 border-b border-slate-100 pb-3">
+                        <img src="${item.image}" class="w-14 h-14 object-contain rounded-lg bg-slate-50 p-1">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-slate-800 truncate">${item.name}</h4>
+                            <p class="text-xs text-sky-600 font-extrabold mt-0.5">${formatPrice(item.price)}</p>
+                            <div class="flex items-center space-x-2 mt-2">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold">-</button>
+                                <span class="text-xs font-bold w-4 text-center">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold">+</button>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-slate-400 hover:text-red-500 p-1">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            cartSubtotalEl.innerText = formatPrice(subtotal);
+            cartTotalEl.innerText = formatPrice(subtotal);
+            lucide.createIcons();
+        }
+
+        // Cart Drawer Control
+        function openCart() {
+            cartDrawer.classList.remove('pointer-events-none');
+            cartOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            cartPanel.classList.remove('translate-x-full');
+        }
+
+        function closeCart() {
+            cartOverlay.classList.add('opacity-0', 'pointer-events-none');
+            cartPanel.classList.add('translate-x-full');
+            setTimeout(() => {
+                cartDrawer.classList.add('pointer-events-none');
+            }, 300);
+        }
+
+        // Modal Operations
+        function openModal(productId) {
+            const prod = products.find(p => p.id === productId);
+            if (!prod) return;
+
+            currentModalProductId = productId;
+            modalImg.src = prod.image;
+            modalCategory.innerText = prod.category;
+            modalTitle.innerText = prod.name;
+            modalPrice.innerText = formatPrice(prod.price);
+            modalDesc.innerText = prod.description;
+
+            productModal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+        }
+
+        function closeModal() {
+            productModal.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.add('scale-95');
+        }
+
+        // Checkout via WhatsApp
+        function handleCheckout() {
+            if (cart.length === 0) return;
+
+            const name = document.getElementById('client-name').value.trim();
+            const address = document.getElementById('client-address').value.trim();
+
+            if (!name || !address) {
+                alert('Por favor, preencha seu nome e endereço antes de finalizar!');
+                return;
+            }
+
+            let msg = `*NOVO PEDIDO - TECHSTORE*\n\n`;
+            msg += `*Cliente:* ${name}\n`;
+            msg += `*Endereço:* ${address}\n\n`;
+            msg += `*Itens do Pedido:*\n`;
+
+            cart.forEach(item => {
+                msg += `• ${item.quantity}x ${item.name} (${formatPrice(item.price * item.quantity)})\n`;
+            });
+
+            const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+            msg += `\n*Total:* ${formatPrice(total)}\n`;
+            msg += `*Frete:* Grátis`;
+
+            const encodedMsg = encodeURIComponent(msg);
+            window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodedMsg}`, '_blank');
+        }
+
+        // Event Listeners
+        openCartBtn.addEventListener('click', openCart);
+        closeCartBtn.addEventListener('click', closeCart);
+        cartOverlay.addEventListener('click', closeCart);
+        continueShoppingBtn.addEventListener('click', closeCart);
+
+        closeModalBtn.addEventListener('click', closeModal);
+        productModal.addEventListener('click', (e) => {
+            if (e.target === productModal) closeModal();
+        });
+
+        modalAddBtn.addEventListener('click', () => {
+            if (currentModalProductId) {
+                addToCart(currentModalProductId);
+                closeModal();
+            }
+        });
+
+        checkoutWhatsappBtn.addEventListener('click', handleCheckout);
+
+        // Search Input Handlers
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderProducts();
+        });
+        searchInputMobile.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderProducts();
+        });
+
+        // Category Filter Handlers
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryButtons.forEach(b => {
+                    b.classList.remove('bg-sky-600', 'text-white');
+                    b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+                });
+                btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+                btn.classList.add('bg-sky-600', 'text-white');
+
+                activeCategory = btn.getAttribute('data-category');
+                renderProducts();
+            });
+        });
+
+        // Initialize App on Page Load
+        window.onload = function() {
+            renderProducts();
+            updateCartUI();
+        };
+    </script>
+</body>
+</html>
